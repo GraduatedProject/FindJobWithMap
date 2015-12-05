@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>Success</web-resource-name>
+      <url-pattern>/Map2.jsp</url-pattern>
+      <http-method>GET</http-method>
+      <http-method>POST</http-method>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>user</role-name>
+    </auth-constraint>
+  </security-constraint>
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>Success</web-resource-name>
+      <url-pattern>/AddAdvert.jsp</url-pattern>
+      <http-method>GET</http-method>
+      <http-method>POST</http-method>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>employer</role-name>
+    </auth-constraint>
+  </security-constraint>
+  <login-config>
+    <auth-method>FORM</auth-method>
+    <realm-name>JDBCRealm</realm-name>
+    <form-login-config>
+      <form-login-page>/Login.html</form-login-page>
+      <form-error-page>/LogonError.html</form-error-page>
+    </form-login-config>
+  </login-config>
+  <security-role>
+    <role-name>*</role-name>
+  </security-role>
+</web-app>

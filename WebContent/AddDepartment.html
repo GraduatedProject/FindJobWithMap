@@ -1,0 +1,159 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Add Department</title>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+<style>
+html, body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+#map {
+	height: 100%;
+	width: 500px;
+	height: 400px;
+}
+</style>
+</head>
+<body>
+
+	<form method="POST" action="adddepartment">
+		Sube adini giriniz: <input type="text" style="width: 200px;"
+			name="departmentname"> <br>
+			
+		<input type="hidden" id="coords" name="coords">
+		<div id="map"></div>
+		<input type="submit" style="width: 100px;" value="Next">
+	</form>
+
+
+	<script>
+		var map;
+
+		/**
+		 * The CenterControl adds a control to the map that recenters the map on Chicago.
+		 * This constructor takes the control DIV as an argument.
+		 * @constructor
+		 */
+		function CenterControl(controlDiv, map) {
+
+			// Set CSS for the control border.
+			var controlUI = document.createElement('div');
+			controlUI.style.backgroundColor = '#fff';
+			controlUI.style.border = '2px solid #fff';
+			controlUI.style.borderRadius = '3px';
+			controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+			controlUI.style.cursor = 'pointer';
+			controlUI.style.marginBottom = '22px';
+			controlUI.style.textAlign = 'center';
+			controlUI.title = 'Click to recenter the map';
+			controlDiv.appendChild(controlUI);
+
+			// Set CSS for the control interior.
+			var controlText = document.createElement('div');
+			controlText.style.color = 'rgb(25,25,25)';
+			controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+			controlText.style.fontSize = '16px';
+			controlText.style.lineHeight = '38px';
+			controlText.style.paddingLeft = '5px';
+			controlText.style.paddingRight = '5px';
+			controlText.innerHTML = 'Find My Location';
+			controlUI.appendChild(controlText);
+
+			// Setup the click event listeners: simply set the map to Chicago.
+			
+			if (navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition(function(position) {
+					 pos = {
+						lat : position.coords.latitude,
+						lng : position.coords.longitude
+					};
+
+					controlUI.addEventListener('click', function() {
+						map.setCenter(pos);
+						map.setZoom(18);
+					});
+					
+					
+				}, handleLocationError);
+			} else {
+				// Browser doesn't support Geolocation
+				handleLocationError(error);
+			}
+		}
+			
+		function handleLocationError(error) {
+			switch (error.code) {
+			case error.PERMISSION_DENIED:
+				alert('User denied the request for Geolocation.');
+				break;
+			case error.POSITION_UNAVAILABLE:
+				alert('Location information is unavailable.');
+				break;
+			case error.TIMEOUT:
+				alert('The request to get user location timed out.');
+				break;
+			case error.UNKNOWN_ERROR:
+				alert('An unknown error occurred.');
+				break;
+			}
+		}
+			
+			
+		
+
+
+		function initMap() {
+			map = new google.maps.Map(document.getElementById('map'), {
+				center : {
+					lat : 41.0055005,
+					lng : 28.731986
+				},
+				zoom : 10
+			});
+
+			// Create the DIV to hold the control and call the CenterControl() constructor
+			// passing in this DIV.
+			var centerControlDiv = document.createElement('div');
+			var centerControl = new CenterControl(centerControlDiv, map);
+
+			centerControlDiv.index = 1;
+			map.controls[google.maps.ControlPosition.TOP_CENTER]
+					.push(centerControlDiv);
+			
+			var marker;
+
+			function placeMarker(location) {
+			  if ( marker ) {
+			    marker.setPosition(location);
+			  } else {
+			    marker = new google.maps.Marker({
+			      position: location,
+			      map: map
+			    });
+			  }
+			}
+
+			google.maps.event.addListener(map, 'click', function(event) {
+				var markerPosition = event.latLng;
+				var mLat = markerPosition.lat();
+				var mLng = markerPosition.lng();
+				
+				document.getElementById("coords").value = mLat.toString() + ";" + mLng.toString();
+				placeMarker(event.latLng);
+			});
+		}
+	</script>
+	<script
+		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGhDi7ORrjolFUGwq9-SksQl5D1MZuohI&signed_in=true&callback=initMap"
+		async defer>
+		
+	</script>
+
+</body>
+</html>
